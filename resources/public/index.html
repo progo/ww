@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <style>
+    </style>
+  </head>
+  <body>
+    Hello
+    <pre id="output">
+    </pre>
+  </body>
+</html>
+<script>
+var socket = new WebSocket("ws://" + location.host + "/f");
+socket.onmessage = function(e) {
+    var x = JSON.parse(e.data);
+    console.debug(x);
+    document.getElementById("output").innerHTML = x.hey;
+};
+
+socket.onopen = function(e) {
+    socket.send(JSON.stringify({"hey": "you"}));
+}
+</script>
+
