@@ -22,5 +22,22 @@ socket.onmessage = function(e) {
 socket.onopen = function(e) {
     socket.send(JSON.stringify({"hey": "you"}));
 }
+
+function on_key(ev) {
+    console.log(ev);
+    $("#output").text('Key: ' + ev.data.keys);
+    return false;
+}
+
+// NB: keymaps on this thing, case insensitive!
+$(document).bind('keydown', 'ctrl+a', on_key);
+$(document).bind('keydown', 'ctrl+space', on_key);
+$(document).bind('keydown', 'alt+a', on_key);
+$(document).bind('keydown', 'F2', on_key);
+$(document).bind('keydown', 'Return', on_key);
+$(document).bind('keydown', 'Shift+F', on_key);
+$(document).bind('keydown', 'g', on_key);
+$(document).bind('keydown', 'f', on_key);
 </script>
+
 
