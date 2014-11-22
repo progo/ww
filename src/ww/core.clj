@@ -16,14 +16,21 @@
   [rec msg]
   (send! rec (cheshire/generate-string msg)))
 
+(defn take-json
+  "Receive data from the client. This is the entry point for a lot of
+  greatness."
+  [con json]
+  (let [response (cheshire/parse-string json true)]
+    (when (:move response)
+      (send-json! con {:msg (str "DO " (:move response))}))))
+
 (defn ws
   "Take an incoming call & assign it to ws-clients."
   [req]
   (with-channel req con
     (swap! ws-clients conj con)
-    (on-receive con (fn [resp]
-                      ;; echo service
-                      (send! con resp)))
+    (on-receive con (fn [json]
+                      (take-json con json)))
     (on-close con (fn [stat]
                     (swap! ws-clients disj con)))))
 

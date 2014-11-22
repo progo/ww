@@ -20,7 +20,11 @@ socket.onmessage = function(e) {
 };
 
 socket.onopen = function(e) {
-    socket.send(JSON.stringify({"hey": "you"}));
+    send_message({hey: "yuou"});
+}
+
+function send_message(obj) {
+    socket.send(JSON.stringify(obj));
 }
 
 function on_key(ev) {
@@ -38,6 +42,14 @@ $(document).bind('keydown', 'Return', on_key);
 $(document).bind('keydown', 'Shift+F', on_key);
 $(document).bind('keydown', 'g', on_key);
 $(document).bind('keydown', 'f', on_key);
+
+
+$(document).bind('keydown', 'left',     function() { send_message({move: 'left'});});
+$(document).bind('keydown', 'h',        function() { send_message({move: 'left'});});
+$(document).bind('keydown', 'right',    function() { send_message({move: 'right'});});
+$(document).bind('keydown', 'l',        function() { send_message({move: 'right'});});
+$(document).bind('keydown', 'up',       function() { send_message({move: 'up'});});
+$(document).bind('keydown', 'k',        function() { send_message({move: 'up'});});
+$(document).bind('keydown', 'down',     function() { send_message({move: 'down'});});
+$(document).bind('keydown', 'j',        function() { send_message({move: 'down'});});
 </script>
-
-
