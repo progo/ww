@@ -1,27 +1,42 @@
 <html>
   <head>
     <style>
+    #T {
+        table-layout: fixed;
+        border-spacing: 0;
+        border-collapse: collapse;
+        width: 100%;
+        font-family: monospace;
+    }
+    #T td, #T tr {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    #T td {
+    }
     </style>
     <script type="text/javascript" src="lib/jquery-1.11.1.js"></script>
     <script type="text/javascript" src="lib/jquery.hotkeys.js"></script>
   </head>
   <body>
-    Hello
-    <pre id="output">
-    </pre>
+    <table id="T"></table>
+    <pre id="output"></pre>
   </body>
 </html>
 <script>
 var socket = new WebSocket("ws://" + location.host + "/f");
 socket.onmessage = function(e) {
     var x = JSON.parse(e.data);
-    console.debug(x);
-    document.getElementById("output").innerHTML = x.hey;
+    if (x.draw) {
+        cell_xy(x.draw.x, x.draw.y).style.backgroundColor = x.draw.c;
+    }
+    else {
+        console.debug(x);
+    }
 };
 
-socket.onopen = function(e) {
-    send_message({hey: "yuou"});
-}
+socket.onopen = function(e) {};
 
 function send_message(obj) {
     socket.send(JSON.stringify(obj));
@@ -33,6 +48,43 @@ function on_key(ev) {
     return false;
 }
 
+function cell_xy(x, y, table_id) {
+    table_id = table_id || "#T";
+    var selector = table_id
+        + '> tbody '
+        + '> tr:nth-of-type(' + y + ')'
+        + '> td:nth-of-type(' + x + ')'; 
+    return document.querySelector(selector);
+}
+
+function build_table(num_cols, num_rows, table_id) {
+    table_id = table_id || "T";
+    var T = document.getElementById(table_id);
+    var TB = document.createElement('tbody');
+
+    while(T.firstChild) {
+        T.removeChild(T.firstChild);
+    }
+    T.appendChild(TB);
+
+    for (var r = 0 ; r < num_rows ; ++r) {
+        var row = document.createElement('tr');
+        for (var c = 0 ; c < num_cols ; ++c) {
+            var cell = document.createElement('td');
+            cell.innerHTML = '&nbsp;';
+            row.appendChild(cell);
+        }
+        TB.appendChild(row);
+    }
+}
+
+build_table(80, 24);
+for (var x = 1; x <= 80; x += 2) {
+    for (var y = 1; y <= 24; y++) {
+        cell_xy(x + y%2, y).style.backgroundColor = 'lightgray';
+    }
+}
+
 // NB: keymaps on this thing, case insensitive!
 $(document).bind('keydown', 'ctrl+a', on_key);
 $(document).bind('keydown', 'ctrl+space', on_key);
@@ -42,7 +94,6 @@ $(document).bind('keydown', 'Return', on_key);
 $(document).bind('keydown', 'Shift+F', on_key);
 $(document).bind('keydown', 'g', on_key);
 $(document).bind('keydown', 'f', on_key);
-
 
 $(document).bind('keydown', 'left',     function() { send_message({move: 'left'});});
 $(document).bind('keydown', 'h',        function() { send_message({move: 'left'});});
