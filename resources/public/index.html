@@ -27,12 +27,22 @@
 <script>
 var socket = new WebSocket("ws://" + location.host + "/f");
 socket.onmessage = function(e) {
-    var x = JSON.parse(e.data);
-    if (x.draw) {
-        cell_xy(x.draw.x, x.draw.y).style.backgroundColor = x.draw.c;
+    var message = JSON.parse(e.data);
+    if (message.draw) {
+        var draws;
+        if (! $.isArray(message.draw)) {
+            draws = [message.draw];
+        }
+        else {
+            draws = message.draw;
+        }
+        $.each(draws, function(ind, D) {
+            D = D.draw;
+            cell_xy(D.x, D.y).style.backgroundColor = D.c;
+        });
     }
     else {
-        console.debug(x);
+        console.debug(message);
     }
 };
 
