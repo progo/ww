@@ -27,7 +27,14 @@
 <script>
 var socket = new WebSocket("ws://" + location.host + "/f");
 socket.onmessage = function(e) {
-    var message = JSON.parse(e.data);
+    var message;
+    try {
+        message = JSON.parse(e.data);
+    } catch (e) {
+        console.error(e);
+        return;
+    }
+
     if (message.draw) {
         var draws;
         if (! $.isArray(message.draw)) {
@@ -36,10 +43,8 @@ socket.onmessage = function(e) {
         else {
             draws = message.draw;
         }
-        $.each(draws, function(ind, D) {
-            D = D.draw;
-            cell_xy(D.x, D.y).style.backgroundColor = D.c;
-        });
+
+        draws.map(draw_cell);
     }
     else {
         console.debug(message);
@@ -58,13 +63,25 @@ function on_key(ev) {
     return false;
 }
 
-function cell_xy(x, y, table_id) {
+function get_cell_xy(x, y, table_id) {
     table_id = table_id || "#T";
     var selector = table_id
         + '> tbody '
         + '> tr:nth-of-type(' + y + ')'
         + '> td:nth-of-type(' + x + ')'; 
     return document.querySelector(selector);
+}
+
+function draw_cell(cell) {
+    var cellh = get_cell_xy(cell.x, cell.y);
+    if (cellh) {
+        if (cell.text !== undefined)
+            cellh.innerHTML = cell.text;
+        if (cell.fg !== undefined)
+            cellh.style.color = cell.fg;
+        if (cell.bg !== undefined)
+            cellh.style.backgroundColor = cell.bg;
+    }
 }
 
 function build_table(num_cols, num_rows, table_id) {
@@ -91,7 +108,11 @@ function build_table(num_cols, num_rows, table_id) {
 build_table(80, 24);
 for (var x = 1; x <= 80; x += 2) {
     for (var y = 1; y <= 24; y++) {
-        cell_xy(x + y%2, y).style.backgroundColor = 'lightgray';
+        draw_cell({
+            x: x + y % 2,
+            y: y,
+            bg: 'lightgray'
+        });
     }
 }
 
