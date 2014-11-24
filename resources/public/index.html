@@ -1,23 +1,11 @@
 <html>
   <head>
-    <style>
-    #T {
-        table-layout: fixed;
-        border-spacing: 0;
-        border-collapse: collapse;
-        width: 100%;
-        font-family: monospace;
-    }
-    #T td, #T tr {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    #T td {
-    }
-    </style>
+    <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
     <script type="text/javascript" src="lib/jquery-1.11.1.js"></script>
     <script type="text/javascript" src="lib/jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="js/comm.js"></script>
+    <script type="text/javascript" src="js/draw.js"></script>
+    <script type="text/javascript" src="js/keys.js"></script>
   </head>
   <body>
     <table id="T"></table>
@@ -25,113 +13,18 @@
   </body>
 </html>
 <script>
-var socket = new WebSocket("ws://" + location.host + "/f");
-socket.onmessage = function(e) {
-    var message;
-    try {
-        message = JSON.parse(e.data);
-    } catch (e) {
-        console.error(e);
-        return;
-    }
 
-    if (message.draw) {
-        var draws;
-        if (! $.isArray(message.draw)) {
-            draws = [message.draw];
+(function() {
+    build_table(80, 24);
+    for (var x = 1; x <= 80; x += 2) {
+        for (var y = 1; y <= 24; y++) {
+            draw_cell({
+                x: x + y % 2,
+                y: y,
+                bg: 'lightgray'
+            });
         }
-        else {
-            draws = message.draw;
-        }
-
-        draws.map(draw_cell);
     }
-    else {
-        console.debug(message);
-    }
-};
+})();
 
-socket.onopen = function(e) {};
-
-function send_message(obj) {
-    socket.send(JSON.stringify(obj));
-}
-
-function on_key(ev) {
-    console.log(ev);
-    $("#output").text('Key: ' + ev.data.keys);
-    return false;
-}
-
-function get_cell_xy(x, y, table_id) {
-    table_id = table_id || "#T";
-    var selector = table_id
-        + '> tbody '
-        + '> tr:nth-of-type(' + y + ')'
-        + '> td:nth-of-type(' + x + ')'; 
-    return document.querySelector(selector);
-}
-
-function draw_cell(cell) {
-    var cellh = get_cell_xy(cell.x, cell.y);
-    if (cellh) {
-        if (cell.text !== undefined)
-            cellh.innerHTML = cell.text;
-        if (cell.fg !== undefined)
-            cellh.style.color = cell.fg;
-        if (cell.bg !== undefined)
-            cellh.style.backgroundColor = cell.bg;
-    }
-}
-
-function build_table(num_cols, num_rows, table_id) {
-    table_id = table_id || "T";
-    var T = document.getElementById(table_id);
-    var TB = document.createElement('tbody');
-
-    while(T.firstChild) {
-        T.removeChild(T.firstChild);
-    }
-    T.appendChild(TB);
-
-    for (var r = 0 ; r < num_rows ; ++r) {
-        var row = document.createElement('tr');
-        for (var c = 0 ; c < num_cols ; ++c) {
-            var cell = document.createElement('td');
-            cell.innerHTML = '&nbsp;';
-            row.appendChild(cell);
-        }
-        TB.appendChild(row);
-    }
-}
-
-build_table(80, 24);
-for (var x = 1; x <= 80; x += 2) {
-    for (var y = 1; y <= 24; y++) {
-        draw_cell({
-            x: x + y % 2,
-            y: y,
-            bg: 'lightgray'
-        });
-    }
-}
-
-// NB: keymaps on this thing, case insensitive!
-$(document).bind('keydown', 'ctrl+a', on_key);
-$(document).bind('keydown', 'ctrl+space', on_key);
-$(document).bind('keydown', 'alt+a', on_key);
-$(document).bind('keydown', 'F2', on_key);
-$(document).bind('keydown', 'Return', on_key);
-$(document).bind('keydown', 'Shift+F', on_key);
-$(document).bind('keydown', 'g', on_key);
-$(document).bind('keydown', 'f', on_key);
-
-$(document).bind('keydown', 'left',     function() { send_message({move: 'left'});});
-$(document).bind('keydown', 'h',        function() { send_message({move: 'left'});});
-$(document).bind('keydown', 'right',    function() { send_message({move: 'right'});});
-$(document).bind('keydown', 'l',        function() { send_message({move: 'right'});});
-$(document).bind('keydown', 'up',       function() { send_message({move: 'up'});});
-$(document).bind('keydown', 'k',        function() { send_message({move: 'up'});});
-$(document).bind('keydown', 'down',     function() { send_message({move: 'down'});});
-$(document).bind('keydown', 'j',        function() { send_message({move: 'down'});});
 </script>
