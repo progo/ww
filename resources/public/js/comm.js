@@ -20,6 +20,9 @@ socket.onmessage = function(e) {
 
         draws.map(draw_cell);
     }
+    else if (message.msg) {
+        $("#output").text(message.msg);
+    }
     else {
         console.debug(message);
     }

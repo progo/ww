@@ -9,6 +9,23 @@
             [cheshire.core :as cheshire]
             [ring.middleware.reload :as reload]))
 
+
+(def world-map (atom {}))
+(def viewport (atom {:x 0 :y 0 :width 72 :height 28}))
+
+(defn draw-map! []
+  (let [vp @viewport
+        con (first @ws-clients)]
+    (send-json! con
+                {:msg ((juxt :x :y) vp)})
+    (send-json! con
+                {:draw
+                 (for [x (range (:width vp))
+                       y (range (:height vp))]
+                   {:x x
+                    :y y
+                    :bg (str \# (rand-int 255))})})))
+
 (defonce ws-clients (atom #{}))
 
 (defn send-json!
@@ -21,8 +38,16 @@
   greatness."
   [con json]
   (let [response (cheshire/parse-string json true)]
+    ;; temporary testing ground
     (when (:move response)
-      (send-json! con {:msg (str "DO " (:move response))}))))
+      (when-let [[coord move] (case (:move response)
+                                "left" [:x dec]
+                                "right" [:x inc]
+                                "up" [:y dec]
+                                "down" [:y inc]
+                                [:x identity])]
+        (swap! viewport update-in [coord] move)
+        (draw-map!)))))
 
 (defn ws
   "Take an incoming call & assign it to ws-clients."
