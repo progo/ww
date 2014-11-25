@@ -1,15 +1,9 @@
-
-function get_cell_xy(x, y, table_id) {
-    table_id = table_id || "#T";
-    var selector = table_id
-        + '> tbody '
-        + '> tr:nth-of-type(' + y + ')'
-        + '> td:nth-of-type(' + x + ')';
-    return document.querySelector(selector);
+function __cell_id(x, y) {
+    return 'cell-' + x + 'x' + y;
 }
 
 function draw_cell(cell) {
-    var cellh = get_cell_xy(cell.x, cell.y);
+    var cellh = document.getElementById(__cell_id(cell.x, cell.y));
     if (cellh) {
         if (cell.text !== undefined)
             cellh.innerHTML = cell.text;
@@ -21,22 +15,18 @@ function draw_cell(cell) {
 }
 
 function build_table(num_cols, num_rows, table_id) {
-    table_id = table_id || "T";
-    var T = document.getElementById(table_id);
-    var TB = document.createElement('tbody');
-
-    while(T.firstChild) {
-        T.removeChild(T.firstChild);
-    }
-    T.appendChild(TB);
-
-    for (var r = 0 ; r < num_rows ; ++r) {
-        var row = document.createElement('tr');
-        for (var c = 0 ; c < num_cols ; ++c) {
-            var cell = document.createElement('td');
-            cell.innerHTML = '&nbsp;';
-            row.appendChild(cell);
+    var $T = $(table_id || "#T");
+    $T.empty();
+    for (var y = 0 ; y < num_rows ; ++y) {
+        for (var x = 0 ; x < num_cols ; ++x) {
+            var $cell = $("<div/>", {
+                'class': 'cell',
+                id: __cell_id(x, y),
+                html: '&nbsp'
+            });
+            $cell.css('left', 17*x);
+            $cell.css('top', 17*y);
+            $T.append($cell);
         }
-        TB.appendChild(row);
     }
 }

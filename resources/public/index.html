@@ -8,16 +8,18 @@
     <script type="text/javascript" src="js/keys.js"></script>
   </head>
   <body>
-    <table id="T"></table>
+    <div id="T"></div>
     <pre id="output"></pre>
   </body>
 </html>
 <script>
 
 (function() {
-    build_table(80, 24);
-    for (var x = 1; x <= 80; x += 2) {
-        for (var y = 1; y <= 24; y++) {
+    var W = 72;
+    var H = 41;
+    build_table(W, H);
+    for (var x = 0; x < W; x += 2) {
+        for (var y = 0; y < H; y++) {
             draw_cell({
                 x: x + y % 2,
                 y: y,

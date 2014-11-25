@@ -5,10 +5,10 @@
     width: 100%;
     font-family: monospace;
 }
-#T td, #T tr {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-#T td {
+
+#T .cell {
+    display: block;
+    width: 17px;
+    height: 17px;
+    position: absolute;
 }
