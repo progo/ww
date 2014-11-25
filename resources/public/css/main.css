@@ -12,3 +12,9 @@
     height: 17px;
     position: absolute;
 }
+
+
+#output {
+    float: right;
+    width: 125px;
+}

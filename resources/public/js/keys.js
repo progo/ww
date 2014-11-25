@@ -5,14 +5,14 @@ function on_key(ev) {
 }
 
 // NB: keymaps on this thing, case insensitive!
-$(document).bind('keydown', 'ctrl+a', on_key);
-$(document).bind('keydown', 'ctrl+space', on_key);
-$(document).bind('keydown', 'alt+a', on_key);
-$(document).bind('keydown', 'F2', on_key);
-$(document).bind('keydown', 'Return', on_key);
-$(document).bind('keydown', 'Shift+F', on_key);
-$(document).bind('keydown', 'g', on_key);
-$(document).bind('keydown', 'f', on_key);
+// $(document).bind('keydown', 'ctrl+a', on_key);
+// $(document).bind('keydown', 'ctrl+space', on_key);
+// $(document).bind('keydown', 'alt+a', on_key);
+// $(document).bind('keydown', 'F2', on_key);
+// $(document).bind('keydown', 'Return', on_key);
+// $(document).bind('keydown', 'Shift+F', on_key);
+// $(document).bind('keydown', 'g', on_key);
+// $(document).bind('keydown', 'f', on_key);
 
 $(document).bind('keydown', 'left',     function() { send_message({move: 'left'});});
 $(document).bind('keydown', 'h',        function() { send_message({move: 'left'});});
