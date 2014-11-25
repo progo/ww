@@ -9,9 +9,14 @@
             [cheshire.core :as cheshire]
             [ring.middleware.reload :as reload]))
 
-
-(def world-map (atom {}))
 (def viewport (atom {:x 0 :y 0 :width 72 :height 28}))
+
+(def world-map
+  (let [colors ["red" "orange" "yellow" "gold"]]
+    (into (hash-map)
+          (for [x (range 128)
+                y (range 89)]
+            [[x y] (rand-nth colors)]))))
 
 (defn draw-map! []
   (let [vp @viewport
@@ -22,9 +27,11 @@
                 {:draw
                  (for [x (range (:width vp))
                        y (range (:height vp))]
-                   {:x x
-                    :y y
-                    :bg (str \# (rand-int 255))})})))
+                   (let [x' (+ x (:x vp))
+                         y' (+ y (:y vp))]
+                     {:x x
+                      :y y
+                      :bg (world-map [x' y'])}))})))
 
 (defonce ws-clients (atom #{}))
 

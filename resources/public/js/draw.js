@@ -9,8 +9,8 @@ function draw_cell(cell) {
             cellh.innerHTML = cell.text;
         if (cell.fg !== undefined)
             cellh.style.color = cell.fg;
-        if (cell.bg !== undefined)
-            cellh.style.backgroundColor = cell.bg;
+        // if (cell.bg !== undefined)
+        cellh.style.backgroundColor = cell.bg || "#fff";
     }
 }
 
