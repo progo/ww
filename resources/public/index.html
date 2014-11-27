@@ -14,10 +14,16 @@
 </html>
 <script>
 
-(function() {
-    var W = 72;
-    var H = 28;
+function resize_grid(W, H) {
     build_table(W, H);
+    send_message({
+        'action': 'resize-vp',
+        'new-w': W,
+        'new-h': H
+    });
+}
+
+function checker_board(W, H) {
     for (var x = 0; x < W; x += 2) {
         for (var y = 0; y < H; y++) {
             draw_cell({
@@ -27,6 +33,19 @@
             });
         }
     }
-})();
+}
+
+function resize_grid_fit_browser() {
+    var bs = 17;
+    var w = parseInt(window.innerWidth  / bs, 10);
+    var h = parseInt(window.innerHeight / bs, 10);
+    resize_grid(w, h);
+}
+
+$(document).ready(function() {
+    $(window).resize(resize_grid_fit_browser);
+    // TODO hook up with websock.ready
+    // $(window).resize();
+});
 
 </script>

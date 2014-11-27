@@ -18,9 +18,8 @@
                 y (range 89)]
             [[x y] (rand-nth colors)]))))
 
-(defn draw-map! []
-  (let [vp @viewport
-        con (first @ws-clients)]
+(defn draw-map! [con]
+  (let [vp @viewport]
     (send-json! con
                 {:msg ((juxt :x :y) vp)})
     (send-json! con
@@ -46,6 +45,10 @@
   [con json]
   (let [response (cheshire/parse-string json true)]
     ;; temporary testing ground
+    (when (= (:action response) "resize-vp")
+      (swap! viewport assoc :width (:new-w response))
+      (swap! viewport assoc :height (:new-h response))
+      (draw-map! con))
     (when (:move response)
       (when-let [[coord move] (case (:move response)
                                 "left" [:x dec]
@@ -54,7 +57,7 @@
                                 "down" [:y inc]
                                 [:x identity])]
         (swap! viewport update-in [coord] move)
-        (draw-map!)))))
+        (draw-map! con)))))
 
 (defn ws
   "Take an incoming call & assign it to ws-clients."
@@ -71,10 +74,11 @@
   (GET "/f" [] ws)
   (route/resources "/"))
 
-(def application (-> routes
-                     handler/site
-                     reload/wrap-reload
-                     (wrap-cors :access-control-allow-origin #".+")))
+(def application
+  (-> routes
+      handler/site
+      reload/wrap-reload
+      (wrap-cors :access-control-allow-origin #".+")))
 
 ;; Note: run-server returns a function that closes it. Be sure to
 ;; store it for safekeeping, namely when you want to restart the whole
