@@ -43,9 +43,10 @@ function resize_grid_fit_browser() {
 }
 
 $(document).ready(function() {
-    $(window).resize(resize_grid_fit_browser);
-    // TODO hook up with websock.ready
-    // $(window).resize();
+    $(socket).on('open.resize', function() {
+        $(window).resize(resize_grid_fit_browser);
+        $(window).resize();
+    });
 });
 
 </script>

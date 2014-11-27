@@ -28,8 +28,6 @@ socket.onmessage = function(e) {
     }
 };
 
-socket.onopen = function(e) {};
-
 function send_message(obj) {
     socket.send(JSON.stringify(obj));
 }
