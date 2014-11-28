@@ -10,7 +10,6 @@ socket.onmessage = function(e) {
     }
 
     if (message.draw) {
-        console.log('it\'s a draw');
         var draws;
         if (! $.isArray(message.draw)) {
             draws = [message.draw];

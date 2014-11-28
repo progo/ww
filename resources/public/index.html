@@ -8,14 +8,17 @@
     <script type="text/javascript" src="js/keys.js"></script>
   </head>
   <body>
-    <div id="T"></div>
+    <canvas width="800" id="T"></canvas>
     <pre id="output"></pre>
   </body>
 </html>
 <script>
 
+var BLOCKSIZE = 19;
+
 function resize_grid(W, H) {
-    build_table(W, H);
+    $("#T")[0].width = W * BLOCKSIZE;
+    $("#T")[0].height = H * BLOCKSIZE;
     send_message({
         'action': 'resize-vp',
         'new-w': W,
@@ -36,9 +39,8 @@ function checker_board(W, H) {
 }
 
 function resize_grid_fit_browser() {
-    var bs = 17;
-    var w = parseInt(window.innerWidth  / bs, 10);
-    var h = parseInt(window.innerHeight / bs, 10);
+    var w = parseInt(window.innerWidth  / BLOCKSIZE, 10);
+    var h = parseInt(window.innerHeight / BLOCKSIZE, 10);
     resize_grid(w, h);
 }
 

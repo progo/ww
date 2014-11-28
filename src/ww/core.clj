@@ -30,7 +30,7 @@
                          y' (+ y (:y vp))]
                      {:x x
                       :y y
-                      :bg (world-map [x' y'])}))})))
+                      :bg (world-map [x' y'] "#888")}))})))
 
 (defonce ws-clients (atom #{}))
 
