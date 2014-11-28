@@ -14,11 +14,18 @@ function on_key(ev) {
 // $(document).bind('keydown', 'g', on_key);
 // $(document).bind('keydown', 'f', on_key);
 
-$(document).bind('keydown', 'left',     function() { send_message({move: 'left'});});
-$(document).bind('keydown', 'h',        function() { send_message({move: 'left'});});
-$(document).bind('keydown', 'right',    function() { send_message({move: 'right'});});
-$(document).bind('keydown', 'l',        function() { send_message({move: 'right'});});
-$(document).bind('keydown', 'up',       function() { send_message({move: 'up'});});
-$(document).bind('keydown', 'k',        function() { send_message({move: 'up'});});
-$(document).bind('keydown', 'down',     function() { send_message({move: 'down'});});
-$(document).bind('keydown', 'j',        function() { send_message({move: 'down'});});
+function send_move(m) {
+    send_message({
+        action: 'move',
+        move: m
+    });
+}
+
+$(document).bind('keydown', 'left',     function() { send_move('left'); });
+$(document).bind('keydown', 'h',        function() { send_move('left'); });
+$(document).bind('keydown', 'right',    function() { send_move('right'); });
+$(document).bind('keydown', 'l',        function() { send_move('right'); });
+$(document).bind('keydown', 'up',       function() { send_move('up'); });
+$(document).bind('keydown', 'k',        function() { send_move('up'); });
+$(document).bind('keydown', 'down',     function() { send_move('down'); });
+$(document).bind('keydown', 'j',        function() { send_move('down'); });

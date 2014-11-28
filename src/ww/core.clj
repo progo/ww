@@ -41,23 +41,38 @@
 
 (defn take-json
   "Receive data from the client. This is the entry point for a lot of
-  greatness."
+  greatness. Dispatches to a multimethod quickly on."
   [con json]
   (let [response (cheshire/parse-string json true)]
-    ;; temporary testing ground
-    (when (= (:action response) "resize-vp")
-      (swap! viewport assoc :width (:new-w response))
-      (swap! viewport assoc :height (:new-h response))
-      (draw-map! con))
-    (when (:move response)
-      (when-let [[coord move] (case (:move response)
-                                "left" [:x dec]
-                                "right" [:x inc]
-                                "up" [:y dec]
-                                "down" [:y inc]
-                                [:x identity])]
-        (swap! viewport update-in [coord] move)
-        (draw-map! con)))))
+    (act-on-message! con response)))
+
+(defn act-dispatcher
+  [con response]
+  (:action response))
+
+(defmulti act-on-message!
+  "Incoming message (JSON converted to a map) from a client takes
+  dispatched and handled here."
+  #'act-dispatcher)
+
+(defmethod act-on-message!
+  "move"
+  [con response]
+  (when-let [[coord move] (case (:move response)
+                            "left" [:x dec]
+                            "right" [:x inc]
+                            "up" [:y dec]
+                            "down" [:y inc]
+                            [:x identity])]
+    (swap! viewport update-in [coord] move)
+    (draw-map! con)))
+
+(defmethod act-on-message!
+  "resize-vp"
+  [con response]
+  (swap! viewport assoc :width (:new-w response))
+  (swap! viewport assoc :height (:new-h response))
+  (draw-map! con))
 
 (defn ws
   "Take an incoming call & assign it to ws-clients."
