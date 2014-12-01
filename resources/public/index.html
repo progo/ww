@@ -14,11 +14,14 @@
 </html>
 <script>
 
-var BLOCKSIZE = 19;
+var globals = {
+    blocksize: 19
+};
 
 function resize_grid(W, H) {
-    $("#C")[0].width = (W * BLOCKSIZE);
-    $("#C")[0].height=(H * BLOCKSIZE);
+    var bs = globals.blocksize;
+    $("#C")[0].width = (W * bs);
+    $("#C")[0].height=(H * bs);
     send_message({
         'action': 'resize-vp',
         'new-w': W,
@@ -29,8 +32,9 @@ function resize_grid(W, H) {
 function resize_grid_fit_browser() {
     var margin_bottom = 100;
     var margin_right = 10;
-    var w = parseInt((window.innerWidth  - margin_right)  / BLOCKSIZE, 10);
-    var h = parseInt((window.innerHeight - margin_bottom) / BLOCKSIZE, 10);
+    var bs = globals.blocksize;
+    var w = parseInt((window.innerWidth  - margin_right)  / bs, 10);
+    var h = parseInt((window.innerHeight - margin_bottom) / bs, 10);
     resize_grid(w, h);
 }
 
@@ -40,5 +44,4 @@ $(document).ready(function() {
         $(window).resize();
     });
 });
-
 </script>

@@ -30,5 +30,5 @@ $(document).bind('keydown', 'k',        function() { send_move('up'); });
 $(document).bind('keydown', 'down',     function() { send_move('down'); });
 $(document).bind('keydown', 'j',        function() { send_move('down'); });
 
-$(document).bind('keydown', 'shift+p',  function() { BLOCKSIZE += 2; $(window).resize(); });
-$(document).bind('keydown', 'p',        function() { BLOCKSIZE -= 2; $(window).resize(); });
+$(document).bind('keydown', 'shift+p',  function() { globals.blocksize += 2; $(window).resize(); });
+$(document).bind('keydown', 'p',        function() { globals.blocksize -= 2; $(window).resize(); });
