@@ -15,13 +15,17 @@
 <script>
 
 var globals = {
-    blocksize: 19
+    blocksize: 19,
+    width: 80,
+    height: 20
 };
 
 function resize_grid(W, H) {
     var bs = globals.blocksize;
     $("#C")[0].width = (W * bs);
     $("#C")[0].height=(H * bs);
+    globals.width = W;
+    globals.height = H;
     send_message({
         'action': 'resize-vp',
         'new-w': W,

@@ -17,7 +17,6 @@ socket.onmessage = function(e) {
         else {
             draws = message.draw;
         }
-
         draws.map(draw_cell);
     }
     else if (message.msg) {

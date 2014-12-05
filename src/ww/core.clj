@@ -14,9 +14,10 @@
 (def world-map
   (let [colors ["red" "orange" "yellow" "gold"]]
     (into (hash-map)
-          (for [x (range 128)
-                y (range 89)]
-            [[x y] (rand-nth colors)]))))
+          (for [x (range 228)
+                y (range 120)]
+            [[x y]
+             (rand-nth colors)]))))
 
 (defn draw-map! [con]
   (let [vp @viewport]
@@ -24,13 +25,13 @@
                 {:msg ((juxt :x :y) vp)})
     (send-json! con
                 {:draw
-                 (for [x (range (:width vp))
-                       y (range (:height vp))]
+                 (for [
+                       y (range (:height vp))
+                       x (range (:width vp))
+                       ]
                    (let [x' (+ x (:x vp))
                          y' (+ y (:y vp))]
-                     {:x x
-                      :y y
-                      :bg (world-map [x' y'] "#888")}))})))
+                     (world-map [x' y'] "#888")))})))
 
 (defonce ws-clients (atom #{}))
 
