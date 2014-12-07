@@ -14,20 +14,25 @@ function on_key(ev) {
 // $(document).bind('keydown', 'g', on_key);
 // $(document).bind('keydown', 'f', on_key);
 
-function send_move(m) {
+function send_move(dir, amt) {
     send_message({
         action: 'move',
-        move: m
+        amt: amt || 1,
+        move: dir
     });
 }
 
 $(document).bind('keydown', 'left',     function() { send_move('left'); });
 $(document).bind('keydown', 'h',        function() { send_move('left'); });
+$(document).bind('keydown', 'ctrl+left',function() { send_move('left', 10); });
 $(document).bind('keydown', 'right',    function() { send_move('right'); });
+$(document).bind('keydown', 'ctrl+right',function() { send_move('right', 10); });
 $(document).bind('keydown', 'l',        function() { send_move('right'); });
 $(document).bind('keydown', 'up',       function() { send_move('up'); });
+$(document).bind('keydown', 'ctrl+up',  function() { send_move('up', 10); });
 $(document).bind('keydown', 'k',        function() { send_move('up'); });
 $(document).bind('keydown', 'down',     function() { send_move('down'); });
+$(document).bind('keydown', 'ctrl+down',function() { send_move('down', 10); });
 $(document).bind('keydown', 'j',        function() { send_move('down'); });
 
 $(document).bind('keydown', 'shift+p',  function() { globals.blocksize += 2; $(window).resize(); });

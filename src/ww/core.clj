@@ -59,14 +59,15 @@
 (defmethod act-on-message!
   "move"
   [con response]
-  (when-let [[coord move] (case (:move response)
-                            "left" [:x dec]
-                            "right" [:x inc]
-                            "up" [:y dec]
-                            "down" [:y inc]
-                            [:x identity])]
-    (swap! viewport update-in [coord] move)
-    (draw-map! con)))
+  (let [amt (:amt response)]
+    (when-let [[coord amt] (case (:move response)
+                             "left" [:x (- amt)]
+                             "right" [:x amt]
+                             "up"   [:y (- amt)]
+                             "down" [:y amt]
+                             [:x 0])]
+      (swap! viewport update-in [coord] (partial + amt))
+      (draw-map! con))))
 
 (defmethod act-on-message!
   "resize-vp"
