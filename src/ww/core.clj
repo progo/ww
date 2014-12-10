@@ -7,17 +7,21 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [cheshire.core :as cheshire]
-            [ring.middleware.reload :as reload]))
+            [ring.middleware.reload :as reload]
+
+            ww.world))
 
 (def viewport (atom {:x 0 :y 0 :width 72 :height 28}))
 
-(def world-map
-  (let [colors ["red" "orange" "yellow" "gold"]]
-    (into (hash-map)
-          (for [x (range 228)
-                y (range 120)]
-            [[x y]
-             (rand-nth colors)]))))
+(defn get-visible-world
+  "Get a collection of blocks of the world that the given viewport
+  allows."
+  [world-map viewport]
+  (for [y (range (:height viewport))
+        x (range (:width viewport))]
+    (let [x' (+ x (:x viewport))
+          y' (+ y (:y viewport))]
+      (world-map [x' y'] "#888"))))
 
 (defn draw-map! [con]
   (let [vp @viewport]
@@ -25,13 +29,7 @@
                 {:msg ((juxt :x :y) vp)})
     (send-json! con
                 {:draw
-                 (for [
-                       y (range (:height vp))
-                       x (range (:width vp))
-                       ]
-                   (let [x' (+ x (:x vp))
-                         y' (+ y (:y vp))]
-                     (world-map [x' y'] "#888")))})))
+                 (get-visible-world ww.world/world-map vp)})))
 
 (defonce ws-clients (atom #{}))
 
