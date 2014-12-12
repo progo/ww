@@ -8,7 +8,6 @@
             [compojure.route :as route]
             [cheshire.core :as cheshire]
             [ring.middleware.reload :as reload]
-
             ww.world))
 
 (def viewport (atom {:x 0 :y 0 :width 72 :height 28}))
