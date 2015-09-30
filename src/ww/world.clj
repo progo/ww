@@ -1,5 +1,4 @@
-(ns ww.world
-  )
+(ns ww.world)
 
 (def world-width 800)
 (def world-height 600)
@@ -43,12 +42,56 @@
             world
             to-inc)))
 
-(do
-  (def world-map
-    (let []
-      (-> (make-world world-width world-height)
-          (give-random-points-world 40000)
-          minesweeper)))
- ;; (ww.core/draw-map! (first @ww.core/ws-clients))
- )
+;; (do
+;;   (def world-map
+;;     (let []
+;;       (-> (make-world world-width world-height)
+;;           (give-random-points-world 40000)
+;;           minesweeper)))
+;;  )
 
+;;; Diamond Square Algorithm
+
+(def width 17)
+(def height 17)
+
+(defn make-zero-grid [width height]
+  (into {}
+        (for [x (range width)
+              y (range height)]
+          [[x y] 0])))
+
+(defn init-grid-corners
+  [grid corners]
+  (let [[a b c d] corners]
+    (-> grid
+        (assoc [0 0] a)
+        (assoc [(dec width) 0] b)
+        (assoc [0 (dec height)] c)
+        (assoc [(dec width) (dec height)] d))))
+
+(defn corners
+  "Assuming even rectangular grid, get the corner values."
+  [grid side]
+  [(grid [0 0])
+   (grid [(dec side) 0])
+   (grid [0 (dec side)])
+   (grid [(dec side) (dec side)])])
+
+(defn diamond-step
+  [grid side]
+  (let [corners (corners grid side)
+        corner-avg (/ (reduce + corners) 4)
+        x (int (/ side 2))
+        center-loc [x x]]
+    (assoc grid center-loc (+ corner-avg))))
+
+(defn square-step
+  [grid])
+
+(def world-map
+  (-> (make-zero-grid width height)
+      (init-grid-corners [1 0.8 0.6 0.85])
+      (diamond-step 17)))
+
+(ww.core/draw-map! (first @ww.core/ws-clients))
